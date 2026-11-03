@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harmonies Crescendo | Scoresheet</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <div class="title"><h1>Harmonies <span>Crescendo</span></h1><p>Scoresheet <span aria-hidden="true">/</span> 4 players</p></div>
+      <nav aria-label="Scoresheet actions">
+        <button id="reset" type="button">New game</button>
+      </nav>
+    </header>
+
+    <form id="scoresheet" class="scoresheet" aria-label="Four-player scoresheet" novalidate></form>
+
+    <footer><span>Landscapes <b>+</b> Animals <b>+</b> Sanctuaries &amp; Whispers</span></footer>
+  </main>
+
+  <template id="player-template">
+    <section class="player">
+      <div class="name-paper"><input class="player-name" type="text" maxlength="24" autocomplete="off" spellcheck="false"></div>
+      <div class="player-board">
+        <div class="score-columns">
+          <div class="landscapes score-column" role="group" aria-label="Landscapes"></div>
+          <div class="animals score-column" role="group" aria-label="Animals">
+            <div class="column-icon"><span class="cube animal-cube" aria-hidden="true"></span><span class="sr-only">Animals</span></div>
+            <div class="animal-scores"></div>
+          </div>
+          <div class="extras score-column">
+            <div class="sanctuaries" role="group" aria-label="Sanctuaries">
+              <div class="column-icon"><span class="sanctuary-icon" aria-hidden="true"><i></i><i></i><i></i></span><span class="sr-only">Sanctuaries</span></div>
+              <div class="sanctuary-scores"></div>
+            </div>
+            <div class="whispers" role="group" aria-label="Whispers">
+              <span class="cube whisper-cube" aria-hidden="true"></span>
+              <span class="whisper-plus" aria-hidden="true">+</span>
+              <div class="whisper-key" aria-hidden="true"><span><i class="empty-space"></i><small>2</small></span><span><i class="cube animal-cube"></i><small>5</small></span></div>
+            </div>
+          </div>
+        </div>
+        <div class="subtotals" aria-label="Category subtotals">
+          <output class="paper subtotal" data-total="landscapes"></output><span aria-hidden="true">+</span>
+          <output class="paper subtotal" data-total="animals"></output><span aria-hidden="true">+</span>
+          <output class="paper subtotal" data-total="extras"></output>
+        </div>
+        <div class="grand-total"><span aria-hidden="true">=</span><output class="paper total" data-total="all" aria-live="polite" aria-atomic="true"></output></div>
+      </div>
+    </section>
+  </template>
+</body>
+</html>
