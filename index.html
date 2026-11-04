@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Harmonies Crescendo | Scoresheet</title>
   <link rel="stylesheet" href="styles.css">
+  <script src="records.js" defer></script>
   <script src="script.js" defer></script>
 </head>
 <body>
@@ -12,13 +13,16 @@
     <header class="page-header">
       <div class="title"><h1>Harmonies <span>Crescendo</span></h1><p>Scoresheet <span aria-hidden="true">/</span> 4 players</p></div>
       <nav aria-label="Scoresheet actions">
+        <a href="leaderboard.html">Leaderboard</a>
         <button id="reset" type="button">New game</button>
       </nav>
     </header>
 
     <form id="scoresheet" class="scoresheet" aria-label="Four-player scoresheet" novalidate></form>
 
-    <footer><span>Landscapes <b>+</b> Animals <b>+</b> Sanctuaries &amp; Whispers</span></footer>
+    <div class="game-actions"><p id="save-status" class="status-message" role="status" aria-live="polite"></p><button id="save-game" class="primary-button" type="button">Save game</button></div>
+
+    <footer><span>Landscapes <b>+</b> Animals <b>+</b> Sanctuaries &amp; Whispers</span><span>Records: this browser</span></footer>
   </main>
 
   <template id="player-template">

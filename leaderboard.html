@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Harmonies Crescendo | Leaderboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script src="records.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <div class="title"><h1>Harmonies <span>Crescendo</span></h1><p>League leaderboard</p></div>
+      <nav aria-label="Page navigation"><a href="index.html">Scoresheet</a></nav>
+    </header>
+
+    <div id="leaderboard">
+      <div class="league-toolbar">
+        <label for="league">League<select id="league"></select></label>
+        <span id="league-count" class="muted"></span>
+      </div>
+      <p id="records-status" class="status-message" role="status" aria-live="polite"></p>
+      <p id="empty-records" class="empty-state" hidden>No games saved yet.</p>
+
+      <section id="league-results" class="ledger-section" aria-labelledby="standings-title" hidden>
+        <h2 id="standings-title">Standings</h2>
+        <div class="table-scroll"><table class="standings-table">
+          <caption class="sr-only">Wins in the selected league. Tied games count as a win for each tied player.</caption>
+          <thead><tr><th scope="col">Rank</th><th scope="col">Player</th><th scope="col">Wins</th><th scope="col">Played</th><th scope="col">Best</th></tr></thead>
+          <tbody id="standings-body"></tbody>
+        </table></div>
+      </section>
+
+      <section id="personal-bests-section" class="ledger-section" aria-labelledby="bests-title" hidden>
+        <div class="section-heading"><h2 id="bests-title">Personal bests</h2><span class="muted">All leagues</span></div>
+        <div id="personal-bests" class="personal-bests"></div>
+      </section>
+
+      <section id="history-section" class="ledger-section" aria-labelledby="history-title" hidden>
+        <h2 id="history-title">Game history</h2>
+        <div id="game-history"></div>
+      </section>
+
+      <div class="backup-actions">
+        <button id="export-records" type="button">Export backup</button>
+        <button id="import-records" type="button">Import backup</button>
+        <input id="backup-file" class="sr-only" type="file" accept=".json,application/json" tabindex="-1" aria-label="Backup file">
+      </div>
+    </div>
+
+    <footer><span>Records: this browser</span><span>Tied winners share a win.</span></footer>
+  </main>
+</body>
+</html>
