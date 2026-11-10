@@ -3,6 +3,39 @@
 A dependency-free scoresheet for two to four players, with league standings,
 game history, and personal bests. Open `index.html` or use the deployed site.
 
+## Install as an App
+
+Visit the deployed HTTPS site once while online, then install it:
+
+- **iPhone/iPad:** Open in Safari, select **Share**, then **Add to Home Screen**.
+  Leave **Open as Web App** enabled if offered.
+- **Android:** Open in Chrome and select **Install app** or **Add to Home screen**
+  from the browser menu.
+- **Desktop:** Use the install icon in Chrome or Edge's address bar, or the
+  browser's app installation menu.
+
+The Home Screen icon launches the scoresheet in a standalone window. After the
+first successful online load, both the scoresheet and leaderboard work offline,
+including saving games and viewing records. Icons are original cube artwork.
+Installation availability and menu names depend on the browser and OS.
+
+Installation and offline caching require HTTPS, or localhost for development;
+opening the HTML as a local file still works but does not enable these features.
+To test locally with Python installed, run `py -m http.server 8080 --bind 127.0.0.1`
+and open `http://127.0.0.1:8080/`.
+
+Records remain local, not cloud-synced. Some platforms isolate an installed app's
+storage from browser tabs; export a backup before installing and import it into
+the installed app if your records do not appear.
+
+### Offline Cache Updates
+
+Online requests use the network, falling back to the installed app cache when
+offline. When changing any cached file, increment the cache version in `sw.js`
+so the next online visit downloads a complete new offline copy. A replacement
+worker activates after existing app windows and tabs close. Only this app's old
+caches are removed; saved games and other apps' caches are not cleared.
+
 ## Save a Game
 
 Enter each participating player's name and points, leaving unused player columns
@@ -57,5 +90,5 @@ security. Never embed privileged database keys or GitHub tokens in this app.
 With Node.js installed, run:
 
 ```sh
-node --test tests/records.test.cjs
+node --test
 ```

@@ -349,3 +349,11 @@ if (document.querySelector("#leaderboard")) {
   });
   renderLeaderboard();
 }
+
+if ("serviceWorker" in navigator && (location.protocol === "https:" || location.protocol === "http:")) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js", { updateViaCache: "none" }).catch((error) => {
+      console.warn("Offline support is unavailable.", error);
+    });
+  });
+}
