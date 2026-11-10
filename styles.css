@@ -113,6 +113,14 @@ button:disabled { opacity: .55; cursor: default; }
 .status-message { margin: 0; font-size: 14px; color: #47664c; overflow-wrap: anywhere; line-height: 1.6; }
 .status-message:empty { display: none; }
 .status-message.error { color: #a32626; }
+#tiebreak-dialog { width: min(420px, calc(100% - 30px)); max-height: calc(100% - 30px); padding: 24px; border: 1px solid #879582; border-radius: 6px; background: var(--paper); color: var(--ink); }
+#tiebreak-dialog::backdrop { background: #22282070; }
+#tiebreak-players { display: grid; gap: 16px; }
+#tiebreak-players label { display: grid; grid-template-columns: minmax(0, 1fr) 100px; align-items: center; gap: 16px; }
+#tiebreak-players span { overflow-wrap: anywhere; }
+#tiebreak-players input { width: 100%; min-width: 0; padding: 9px; border: 1px solid #879582; border-radius: 4px; background: #fff; color: var(--ink); }
+#tiebreak-players input:focus-visible { outline: 3px solid #386f65; outline-offset: 2px; }
+.tiebreak-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 24px; }
 #leaderboard { background: var(--paper); padding: 26px; border: 1px solid white; box-shadow: 0 3px 4px #343d3020; }
 .league-toolbar { display: flex; align-items: end; justify-content: space-between; gap: 16px; margin-bottom: 20px; }
 .league-toolbar label { min-width: 0; flex: 1; max-width: 560px; font-size: 13px; }

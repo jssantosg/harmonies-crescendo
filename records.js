@@ -21,7 +21,14 @@ const HarmoniesRecords = (() => {
     }
     const total = Object.values(scores).flat().reduce((sum, score) => sum + score, 0);
     if (!Number.isSafeInteger(total)) throw new Error("The total score is too large.");
-    return { name, scores, total };
+    const validated = { name, scores, total };
+    if (player.animalCubes !== undefined) {
+      if (!Number.isSafeInteger(player.animalCubes) || player.animalCubes < 0) {
+        throw new Error("Animal cube counts must be non-negative whole numbers.");
+      }
+      validated.animalCubes = player.animalCubes;
+    }
+    return validated;
   }
 
   function createGame(players, id = crypto.randomUUID(), playedAt = new Date().toISOString()) {
@@ -34,10 +41,18 @@ const HarmoniesRecords = (() => {
       throw new Error("Invalid game ID or date.");
     }
     const highest = Math.max(...validated.map((player) => player.total));
+    let winners = validated.filter((player) => player.total === highest);
+    if (winners.length > 1 && winners.some((player) => player.animalCubes !== undefined)) {
+      if (winners.some((player) => player.animalCubes === undefined)) {
+        throw new Error("Enter animal cube counts for every player tied for first place.");
+      }
+      const mostCubes = Math.max(...winners.map((player) => player.animalCubes));
+      winners = winners.filter((player) => player.animalCubes === mostCubes);
+    }
     return {
       id, playedAt, players: validated,
       league: leagueKey(validated),
-      winners: validated.filter((player) => player.total === highest).map((player) => playerKey(player.name))
+      winners: winners.map((player) => playerKey(player.name))
     };
   }
 

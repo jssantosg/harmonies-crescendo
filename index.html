@@ -25,6 +25,17 @@
     <footer><span>Landscapes <b>+</b> Animals <b>+</b> Sanctuaries &amp; Whispers</span><span>Records: this browser</span></footer>
   </main>
 
+  <dialog id="tiebreak-dialog" aria-labelledby="tiebreak-title">
+    <form method="dialog">
+      <h2 id="tiebreak-title">Animal cubes placed</h2>
+      <div id="tiebreak-players"></div>
+      <div class="tiebreak-actions">
+        <button id="cancel-tiebreak" type="button">Cancel</button>
+        <button class="primary-button" value="save">Save game</button>
+      </div>
+    </form>
+  </dialog>
+
   <template id="player-template">
     <section class="player">
       <div class="name-paper"><input class="player-name" type="text" maxlength="24" autocomplete="off" spellcheck="false"></div>

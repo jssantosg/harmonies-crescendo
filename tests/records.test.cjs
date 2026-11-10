@@ -65,6 +65,50 @@ test("write failures are surfaced instead of reporting a successful save", () =>
   assert.throws(() => records.save(records.createGame([player("Lore", 1), player("Johan", 2)], "one"), blocked), /Storage full/);
 });
 
+test("animal cubes break only first-place score ties and survive storage and backups", () => {
+  const saved = storage();
+  const players = [
+    { ...player("Lore", 100), animalCubes: 10 },
+    { ...player("Johan", 100), animalCubes: 12 },
+    { ...player("Ale", 90), animalCubes: 20 }
+  ];
+  const game = records.createGame(players, "cubes");
+  assert.deepEqual(game.winners, ["johan"]);
+  records.save(game, saved);
+  assert.deepEqual(records.read(saved).games[0], game);
+  const restored = records.merge(JSON.parse(JSON.stringify(records.read(saved))), storage());
+  assert.deepEqual(restored.games[0], game);
+  assert.equal(records.standings(restored.games).find((entry) => entry.name === "Lore").wins, 0);
+  assert.equal(records.standings(restored.games).find((entry) => entry.name === "Johan").wins, 1);
+  assert.deepEqual(records.createGame([players[0], players[2]], "scores-first").winners, ["lore"]);
+});
+
+test("players still share victory when both points and animal cubes tie", () => {
+  const players = ["Lore", "Johan", "Ale", "Max"].map((name) => ({ ...player(name, 100), animalCubes: 0 }));
+  assert.deepEqual(records.createGame(players, "zero-cubes").winners, ["lore", "johan", "ale", "max"]);
+  players[0].animalCubes = 12;
+  players[1].animalCubes = 12;
+  players[2].animalCubes = 10;
+  assert.deepEqual(records.createGame(players, "shared").winners, ["lore", "johan"]);
+});
+
+test("invalid or incomplete tiebreak counts are rejected without changing stored games", () => {
+  const saved = storage();
+  const game = records.createGame([player("Lore", 100), player("Johan", 100)], "legacy");
+  records.save(game, saved);
+  const before = saved.getItem(records.storageKey);
+  for (const animalCubes of [-1, 1.5, Infinity, Number.MAX_SAFE_INTEGER + 1, "12", null]) {
+    assert.throws(() => records.createGame([
+      { ...player("Lore", 100), animalCubes }, { ...player("Johan", 100), animalCubes: 12 }
+    ], "invalid"), /cube counts/);
+  }
+  const incomplete = JSON.parse(JSON.stringify(game));
+  incomplete.players[0].animalCubes = 12;
+  assert.throws(() => records.merge({ version: 1, games: [incomplete] }, saved), /every player tied/);
+  assert.equal(saved.getItem(records.storageKey), before);
+  assert.deepEqual(records.read(saved).games[0].winners, ["lore", "johan"]);
+});
+
 test("deleting a game recalculates wins and personal bests from remaining records", () => {
   const saved = storage();
   records.save(records.createGame([player("Lore", 100), player("Johan", 120)], "one"), saved);

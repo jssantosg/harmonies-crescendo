@@ -8,6 +8,10 @@ game history, and personal bests. Open `index.html` or use the deployed site.
 Enter each participating player's name and points, leaving unused player columns
 empty. Blank score boxes count as zero. Select **Save game** to record the date,
 player list, individual score boxes, totals, league, and winner or tied winners.
+If players tie for the highest score, a popup requires the number of Animal cubes
+each tied player placed. The most cubes wins; players still tied share victory.
+Cancel leaves the game unsaved. Cube counts are saved with the game and shown in
+game history and backups; they do not add points to the score.
 Saved games are locked against duplicate saves. **New game** clears the scores
 and keeps the player names. An unfinished game is retained in the current tab
 when navigating between the scoresheet and leaderboard.
@@ -18,7 +22,8 @@ when navigating between the scoresheet and leaderboard.
 - Names are matched without case differences or extra whitespace. Use consistent
   names: `Lore` and `Lorena` are different players.
 - `Lore vs Johan` and `Lore vs Ale vs Johan` have separate standings.
-- Standings rank players by wins. Tied scores give each tied winner one win.
+- Standings rank players by wins. Players sharing victory after the Animal cube
+  tiebreaker each receive one win.
 - The personal-best tiles show each player's highest score across all leagues.
 - Game history shows the selected league. Deleting a game recalculates standings
   and personal bests.
@@ -28,6 +33,8 @@ when navigating between the scoresheet and leaderboard.
 Completed games are stored as versioned JSON in browser `localStorage`, under
 `harmonies-crescendo-games-v1`. Records are loaded on each visit and before writes.
 There is no database server, account, or automatic cross-device synchronization.
+Older saved games and backups without cube counts retain their original shared
+victories; unknown counts are not inferred.
 
 Records belong to this browser profile and site address. A local file, localhost,
 and the GitHub Pages site do not share storage. Browser cleanup, private browsing,

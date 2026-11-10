@@ -6,6 +6,7 @@ if (scoresheet) {
 const draftKey = "harmonies-crescendo-draft-v1";
 const saveButton = document.querySelector("#save-game");
 const saveStatus = document.querySelector("#save-status");
+const tiebreakDialog = document.querySelector("#tiebreak-dialog");
 let savedGameId = null;
 const landscapes = [
   ["trees", "Trees"],
@@ -117,8 +118,45 @@ scoresheet.addEventListener("input", (event) => {
   rememberDraft();
 });
 
-saveButton.addEventListener("click", () => {
+document.querySelector("#cancel-tiebreak").addEventListener("click", () => tiebreakDialog.close("cancel"));
+
+function requestAnimalCubes(game) {
+  const tied = game.players.filter((player) => game.winners.includes(HarmoniesRecords.playerKey(player.name)));
+  const fields = document.querySelector("#tiebreak-players");
+  fields.replaceChildren();
+  const inputs = tied.map((player) => {
+    const label = document.createElement("label");
+    const name = document.createElement("span");
+    name.textContent = `${player.name} (${player.total} points)`;
+    const input = document.createElement("input");
+    input.type = "number";
+    input.min = "0";
+    input.max = String(Number.MAX_SAFE_INTEGER);
+    input.step = "1";
+    input.inputMode = "numeric";
+    input.required = true;
+    input.setAttribute("aria-label", `${player.name}: Animal cubes placed`);
+    label.append(name, input);
+    fields.append(label);
+    return input;
+  });
+  tiebreakDialog.returnValue = "";
+  return new Promise((resolve) => {
+    tiebreakDialog.addEventListener("close", () => {
+      if (tiebreakDialog.returnValue !== "save") {
+        resolve(null);
+        return;
+      }
+      tied.forEach((player, index) => { player.animalCubes = inputs[index].valueAsNumber; });
+      resolve(HarmoniesRecords.createGame(game.players, game.id, game.playedAt));
+    }, { once: true });
+    tiebreakDialog.showModal();
+  });
+}
+
+saveButton.addEventListener("click", async () => {
   if (savedGameId) return;
+  saveButton.disabled = true;
   try {
     const players = [];
     for (const player of scoresheet.querySelectorAll(".player")) {
@@ -141,7 +179,15 @@ saveButton.addEventListener("click", () => {
       }
       players.push({ name, scores });
     }
-    const game = HarmoniesRecords.createGame(players);
+    let game = HarmoniesRecords.createGame(players);
+    if (game.winners.length > 1) {
+      game = await requestAnimalCubes(game);
+      if (!game) {
+        saveStatus.textContent = "Game not saved.";
+        saveStatus.classList.remove("error");
+        return;
+      }
+    }
     HarmoniesRecords.save(game);
     savedGameId = game.id;
     lockSavedGame();
@@ -152,6 +198,8 @@ saveButton.addEventListener("click", () => {
   } catch (error) {
     saveStatus.textContent = `Not saved. ${error.message} Check that browser storage is available if the problem persists.`;
     saveStatus.classList.add("error");
+  } finally {
+    if (!savedGameId) saveButton.disabled = false;
   }
 });
 
@@ -236,7 +284,8 @@ if (document.querySelector("#leaderboard")) {
         const scores = element("ul", "", "history-scores");
         for (const player of game.players) {
           const winner = game.winners.includes(HarmoniesRecords.playerKey(player.name));
-          scores.append(element("li", `${player.name}: ${player.total}${winner ? (game.winners.length > 1 ? " (tied winner)" : " (winner)") : ""}`, winner ? "winner" : ""));
+          const cubes = player.animalCubes === undefined ? "" : `, ${player.animalCubes} animal cube${player.animalCubes === 1 ? "" : "s"}`;
+          scores.append(element("li", `${player.name}: ${player.total}${cubes}${winner ? (game.winners.length > 1 ? " (tied winner)" : " (winner)") : ""}`, winner ? "winner" : ""));
         }
         details.append(date, scores);
         const remove = element("button", "Delete", "delete-game");
